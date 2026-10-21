@@ -1,0 +1,23 @@
+<div class="crop-modal-overlay" *ngIf="modal.data() as data" (click)="cancel()">
+  <div class="crop-modal" (click)="$event.stopPropagation()">
+    <button class="crop-modal-close" (click)="cancel()">&times;</button>
+    <h3>{{ 'CROP.TITLE' | translate }}</h3>
+
+    <div class="cropper-wrapper">
+      <image-cropper
+        [imageFile]="data.file"
+        [aspectRatio]="1"
+        [maintainAspectRatio]="true"
+        format="jpeg"
+        [imageQuality]="90"
+        output="blob"
+        (imageCropped)="onImageCropped($event)"
+      ></image-cropper>
+    </div>
+
+    <div class="crop-modal-actions">
+      <button class="crop-cancel-btn" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button class="crop-confirm-btn" (click)="confirm()">{{ 'CROP.CONFIRM' | translate }}</button>
+    </div>
+  </div>
+</div>

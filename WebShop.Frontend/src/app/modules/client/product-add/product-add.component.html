@@ -1,0 +1,110 @@
+<div class="page">
+  <div class="page-header">
+    <button class="back-btn" type="button" (click)="goBack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      {{ 'PRODUCT_ADD.BACK' | translate }}
+    </button>
+    <h1>{{ 'PRODUCT_ADD.TITLE' | translate }}</h1>
+  </div>
+
+  <form class="form-wrapper" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Image Upload -->
+    <div class="form-group">
+      <label>{{ 'PRODUCT_ADD.PICTURE_LABEL' | translate }}</label>
+      <div class="upload-zone" (click)="fileInput.click()" [class.has-image]="previewUrl">
+        <img *ngIf="previewUrl" [src]="previewUrl" class="preview-image" alt="preview" />
+        <div *ngIf="!previewUrl" class="upload-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span class="upload-text">{{ 'PRODUCT_ADD.UPLOAD_CLICK' | translate }}</span>
+          <span class="upload-hint">{{ 'PRODUCT_ADD.UPLOAD_HINT' | translate }}</span>
+        </div>
+      </div>
+      <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display:none" />
+      <span *ngIf="isUploadingImage" class="upload-hint">{{ 'AD_FORM.IMAGE_UPLOADING' | translate }}</span>
+      <span *ngIf="imageUploadError" class="error-msg">{{ imageUploadError | translate }}</span>
+    </div>
+
+    <!-- Name -->
+    <div class="form-group">
+      <label for="ad-title">{{ 'PRODUCT_ADD.NAME_LABEL' | translate }}</label>
+      <input id="ad-title" type="text" class="form-input" formControlName="title"
+             [placeholder]="'PRODUCT_ADD.NAME_PLACEHOLDER' | translate" />
+      <app-field-error [control]="form.controls.title"></app-field-error>
+    </div>
+
+    <!-- Price -->
+    <div class="form-group">
+      <label for="ad-price">{{ 'PRODUCT_ADD.PRICE_LABEL' | translate }}</label>
+      <input id="ad-price" type="number" class="form-input" formControlName="price" min="0" step="0.01"
+             [placeholder]="'PRODUCT_ADD.PRICE_PLACEHOLDER' | translate" />
+      <app-field-error [control]="form.controls.price"></app-field-error>
+    </div>
+
+    <!-- Category -->
+    <div class="form-group">
+      <label for="ad-category">{{ 'PRODUCT_ADD.CATEGORY_LABEL' | translate }}</label>
+      <div class="select-wrapper">
+        <select id="ad-category" class="form-select" formControlName="categoryId">
+          <option [ngValue]="null" disabled>{{ 'PRODUCT_ADD.CATEGORY_PLACEHOLDER' | translate }}</option>
+          <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+        </select>
+        <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <app-field-error [control]="form.controls.categoryId"></app-field-error>
+    </div>
+
+    <!-- Location -->
+    <div class="form-group">
+      <label for="ad-location">{{ 'AD_FORM.LOCATION' | translate }}</label>
+      <div class="select-wrapper">
+        <select id="ad-location" class="form-select" formControlName="location">
+          <option value="">{{ 'AD_FORM.LOCATION_PLACEHOLDER' | translate }}</option>
+          <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+        </select>
+        <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Product options -->
+    <div class="form-group">
+      <label for="ad-colors">{{ 'AD_FORM.COLORS' | translate }}</label>
+      <input id="ad-colors" type="text" class="form-input" formControlName="colors"
+             [placeholder]="'AD_FORM.COLORS_PLACEHOLDER' | translate" />
+      <span class="upload-hint">{{ 'AD_FORM.OPTIONS_HINT' | translate }}</span>
+      <app-field-error [control]="form.controls.colors"></app-field-error>
+    </div>
+
+    <div class="form-group">
+      <label for="ad-sizes">{{ 'AD_FORM.SIZES' | translate }}</label>
+      <input id="ad-sizes" type="text" class="form-input" formControlName="sizes"
+             [placeholder]="'AD_FORM.SIZES_PLACEHOLDER' | translate" />
+      <app-field-error [control]="form.controls.sizes"></app-field-error>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="ad-description">{{ 'PRODUCT_ADD.DESC_LABEL' | translate }}</label>
+      <textarea id="ad-description" class="form-textarea" formControlName="description" rows="6"
+                [placeholder]="'PRODUCT_ADD.DESC_PLACEHOLDER' | translate"></textarea>
+      <app-field-error [control]="form.controls.description"></app-field-error>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button class="cancel-btn" type="button" (click)="goBack()">{{ 'PRODUCT_ADD.DISCARD' | translate }}</button>
+      <button class="submit-btn" type="submit" [disabled]="isSubmitting || isUploadingImage">{{ 'PRODUCT_ADD.PUBLISH' | translate }}</button>
+    </div>
+
+  </form>
+</div>

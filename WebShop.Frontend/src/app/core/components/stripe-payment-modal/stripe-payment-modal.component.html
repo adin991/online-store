@@ -1,0 +1,44 @@
+<div class="stripe-modal-overlay" *ngIf="modal.data() as data" (click)="close()">
+  <div class="stripe-modal" (click)="$event.stopPropagation()">
+    <button class="stripe-modal-close" (click)="close()">&times;</button>
+
+    <ng-container *ngIf="!succeeded(); else successTpl">
+      <h3>{{ 'PAYMENT.TITLE' | translate }}</h3>
+      <p class="stripe-modal-subtitle">{{ data.title }}</p>
+      <p class="stripe-modal-price" *ngIf="amountEur() !== null">
+        {{ data.priceKm | money }} (≈ {{ amountEur() | money:'1.2-2':'EUR' }})
+      </p>
+
+      <div class="stripe-modal-loading" *ngIf="loading()">
+        <div class="spinner"></div>
+        <span>{{ 'PAYMENT.PREPARING' | translate }}</span>
+      </div>
+
+      <div [class.hidden]="loading()">
+        <div #paymentElementContainer class="payment-element-container"></div>
+
+        <p class="stripe-test-hint">
+          {{ 'PAYMENT.TEST_CARD' | translate }} <strong>4242 4242 4242 4242</strong>{{ 'PAYMENT.TEST_CARD_HINT' | translate }}
+        </p>
+
+        <p class="stripe-modal-error" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+
+        <button class="stripe-modal-pay" (click)="pay()" [disabled]="submitting() || loading() || !!errorMsg()">
+          {{ submitting() ? ('PAYMENT.PROCESSING' | translate) : ('PAYMENT.PAY' | translate) }}
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #successTpl>
+      <div class="order-modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <h3>{{ 'PAYMENT.SUCCESS_TITLE' | translate }}</h3>
+      <p>{{ 'PAYMENT.SUCCESS_TEXT' | translate: { title: data.title } }}</p>
+      <button class="order-modal-ok" (click)="close()">OK</button>
+    </ng-template>
+  </div>
+</div>

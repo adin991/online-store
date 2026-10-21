@@ -1,0 +1,114 @@
+<div class="dashboard">
+
+  <header class="dash-header">
+    <div>
+      <a class="dash-home" routerLink="/">← {{ 'COMMON.HOME' | translate }}</a>
+      <h1>{{ 'DASHBOARD.TITLE' | translate }}</h1>
+      <p class="dash-sub">{{ 'DASHBOARD.WELCOME' | translate: { name: auth.currentUser()?.name ?? '' } }}</p>
+    </div>
+    <div class="dash-actions">
+      <a class="btn btn-primary" routerLink="/client/product-add">+ {{ 'NAV.ADD_PRODUCT' | translate }}</a>
+      <a class="btn" routerLink="/client/profile-edit">{{ 'SETTINGS.TITLE' | translate }}</a>
+      <a class="btn" routerLink="/client/users" *ngIf="auth.isAdmin()">{{ 'USERS.TITLE' | translate }}</a>
+    </div>
+  </header>
+
+  <!-- Summary -->
+  <section class="stats">
+    <div class="stat">
+      <span class="stat-label">{{ 'DASHBOARD.STAT_TOTAL' | translate }}</span>
+      <span class="stat-value">{{ stats.total }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">{{ 'DASHBOARD.STAT_LIVE' | translate }}</span>
+      <span class="stat-value live">{{ stats.live }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">{{ 'DASHBOARD.STAT_CLOSED' | translate }}</span>
+      <span class="stat-value">{{ stats.closed }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">{{ 'DASHBOARD.STAT_CART' | translate }}</span>
+      <span class="stat-value">{{ cart.itemCount() }} <small>/ {{ cart.total() | money }}</small></span>
+      <span class="stat-hint">{{ 'DASHBOARD.STAT_SAVED' | translate: { count: cart.savedCount() } }}</span>
+    </div>
+  </section>
+
+  <!-- My ads -->
+  <section class="card">
+    <h2>{{ 'DASHBOARD.MY_ADS' | translate }}</h2>
+
+    <form class="filters" [formGroup]="filters" (ngSubmit)="applyFilters()">
+      <input type="search" formControlName="search" [placeholder]="'DASHBOARD.SEARCH' | translate"
+             [attr.aria-label]="'DASHBOARD.SEARCH' | translate" />
+      <select formControlName="status" [attr.aria-label]="'DASHBOARD.STATUS' | translate">
+        <option value="">{{ 'DASHBOARD.ALL_STATUSES' | translate }}</option>
+        <option *ngFor="let s of statusOptions" [value]="s">{{ ('AD_STATUS.' + s) | translate }}</option>
+      </select>
+      <select formControlName="sortBy" [attr.aria-label]="'FILTERS.SORT' | translate">
+        <option value="newest">{{ 'FILTERS.NEWEST' | translate }}</option>
+        <option value="title">{{ 'FILTERS.TITLE_ASC' | translate }}</option>
+        <option value="higher">{{ 'FILTERS.HIGHER' | translate }}</option>
+        <option value="lower">{{ 'FILTERS.LOWER' | translate }}</option>
+      </select>
+      <button type="button" class="btn" (click)="resetFilters()">{{ 'FILTERS.RESET' | translate }}</button>
+    </form>
+
+    <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="empty" *ngIf="!isLoading && items.length === 0">
+      {{ 'DASHBOARD.NO_ADS' | translate }}
+      <a routerLink="/client/product-add">{{ 'DASHBOARD.CREATE_FIRST' | translate }}</a>
+    </div>
+
+    <div class="table-wrap" *ngIf="items.length > 0">
+      <table class="ads-table" [class.loading]="isLoading">
+        <thead>
+          <tr>
+            <th>{{ 'AD_FORM.TITLE' | translate }}</th>
+            <th class="num">{{ 'AD_FORM.PRICE' | translate }}</th>
+            <th>{{ 'DASHBOARD.STATUS' | translate }}</th>
+            <th>{{ 'DASHBOARD.CREATED' | translate }}</th>
+            <th class="actions-col">{{ 'DASHBOARD.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ad of items">
+            <td>
+              <a class="ad-link" [routerLink]="['/ad', ad.id]">
+                <img *ngIf="ad.images?.length" [src]="ad.images![0]" alt="" />
+                <span>{{ ad.title }}</span>
+              </a>
+              <span class="badge boosted" *ngIf="ad.isBoosted">{{ 'AD_STATUS.Boosted' | translate }}</span>
+            </td>
+            <td class="num">{{ ad.price | money }}</td>
+            <td>
+              <span class="badge" [ngClass]="'st-' + (ad.status ?? 'none')">
+                {{ ad.status ? (('AD_STATUS.' + ad.status) | translate) : '—' }}
+              </span>
+            </td>
+            <td>{{ ad.createdAtUtc | localDate:'shortDate' }}</td>
+            <td class="actions-col">
+              <a class="link" [routerLink]="['/client/ad-edit', ad.id]">{{ 'COMMON.EDIT' | translate }}</a>
+              <button type="button" class="link" *ngIf="ad.status === 'Live'"
+                      [disabled]="busyAdId === ad.id" (click)="setStatus(ad, 'Closed')">{{ 'DASHBOARD.CLOSE_AD' | translate }}</button>
+              <button type="button" class="link" *ngIf="ad.status === 'Closed'"
+                      [disabled]="busyAdId === ad.id" (click)="setStatus(ad, 'Live')">{{ 'DASHBOARD.REOPEN_AD' | translate }}</button>
+              <button type="button" class="link danger"
+                      [disabled]="busyAdId === ad.id" (click)="deleteAd(ad)">{{ 'COMMON.DELETE' | translate }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <app-paginator
+      [page]="paging.page"
+      [pageSize]="paging.pageSize"
+      [total]="totalItems"
+      [pageSizes]="[5, 10, 20]"
+      (pageChange)="goToPage($event)"
+      (pageSizeChange)="changePageSize($event)">
+    </app-paginator>
+  </section>
+</div>

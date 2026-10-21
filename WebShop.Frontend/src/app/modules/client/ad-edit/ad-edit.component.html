@@ -1,0 +1,89 @@
+<div class="edit-page">
+
+  <button class="btn-back" type="button" (click)="router.navigate(['/ad', adId])">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    {{ 'COMMON.BACK' | translate }}
+  </button>
+
+  <form class="edit-card" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <h1 class="card-title">{{ 'AD_FORM.EDIT_TITLE' | translate }}</h1>
+
+    <div class="form-group">
+      <label for="edit-title">{{ 'AD_FORM.TITLE' | translate }}</label>
+      <input id="edit-title" type="text" formControlName="title" [placeholder]="'AD_FORM.TITLE_PLACEHOLDER' | translate" />
+      <app-field-error [control]="form.controls.title"></app-field-error>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="edit-price">{{ 'AD_FORM.PRICE' | translate }}</label>
+        <input id="edit-price" type="number" formControlName="price" placeholder="0.00" min="0" step="0.01" />
+        <app-field-error [control]="form.controls.price"></app-field-error>
+      </div>
+      <div class="form-group">
+        <label for="edit-category">{{ 'AD_FORM.CATEGORY' | translate }}</label>
+        <select id="edit-category" formControlName="categoryId">
+          <option [ngValue]="null" disabled>{{ 'AD_FORM.CATEGORY_PLACEHOLDER' | translate }}</option>
+          <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+        </select>
+        <app-field-error [control]="form.controls.categoryId"></app-field-error>
+      </div>
+      <div class="form-group">
+        <label for="edit-location">{{ 'AD_FORM.LOCATION' | translate }}</label>
+        <select id="edit-location" formControlName="location">
+          <option value="">{{ 'AD_FORM.LOCATION_PLACEHOLDER' | translate }}</option>
+          <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="edit-colors">{{ 'AD_FORM.COLORS' | translate }}</label>
+        <input id="edit-colors" type="text" formControlName="colors" [placeholder]="'AD_FORM.COLORS_PLACEHOLDER' | translate" />
+        <app-field-error [control]="form.controls.colors"></app-field-error>
+      </div>
+      <div class="form-group">
+        <label for="edit-sizes">{{ 'AD_FORM.SIZES' | translate }}</label>
+        <input id="edit-sizes" type="text" formControlName="sizes" [placeholder]="'AD_FORM.SIZES_PLACEHOLDER' | translate" />
+        <app-field-error [control]="form.controls.sizes"></app-field-error>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-description">{{ 'AD_FORM.DESCRIPTION' | translate }}</label>
+      <textarea id="edit-description" formControlName="description" rows="5" [placeholder]="'AD_FORM.DESCRIPTION_PLACEHOLDER' | translate"></textarea>
+      <app-field-error [control]="form.controls.description"></app-field-error>
+    </div>
+
+    <div class="form-group">
+      <label>{{ 'AD_FORM.IMAGE' | translate }}</label>
+      <div class="image-upload">
+        <div class="preview" *ngIf="previewUrl">
+          <img [src]="previewUrl" alt="preview" />
+          <button class="remove-img" type="button" (click)="removeImage()" [attr.aria-label]="'AD_FORM.REMOVE_IMAGE' | translate">✕</button>
+        </div>
+        <label class="upload-btn" *ngIf="!previewUrl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>{{ 'AD_FORM.ADD_IMAGE' | translate }}</span>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+        </label>
+      </div>
+      <span *ngIf="isUploadingImage" class="upload-hint">{{ 'AD_FORM.IMAGE_UPLOADING' | translate }}</span>
+      <div class="error-msg" *ngIf="imageUploadError">{{ imageUploadError | translate }}</div>
+    </div>
+
+    <div class="error-msg" *ngIf="saveError">{{ saveError }}</div>
+
+    <button class="btn-save" type="submit" [disabled]="isSaving || isUploadingImage || isLoading">
+      {{ isSaving ? ('COMMON.SAVING' | translate) : ('COMMON.SAVE_CHANGES' | translate) }}
+    </button>
+  </form>
+
+</div>

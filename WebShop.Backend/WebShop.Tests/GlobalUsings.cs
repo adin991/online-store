@@ -1,0 +1,14 @@
+﻿global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using WebShop.Infrastructure.Database;
+global using Microsoft.EntityFrameworkCore;
+global using MediatR;
+global using FluentValidation;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Http;
+global using WebShop.Application.Abstractions;
+global using WebShop.Application.Common.Exceptions;
+global using WebShop.Domain.Entities.Catalog;
+global using WebShop.Domain.Entities.WebShopEntities;
+global using WebShop.Domain.Entities.Identity;
+global using WebShop.Tests.TestSupport;

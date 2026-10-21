@@ -1,0 +1,120 @@
+.chat-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.chat-toggle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #1a9e7a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: background 0.15s;
+
+  svg { width: 26px; height: 26px; }
+  &:hover { background: #168a6a; }
+}
+
+.chat-panel {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  width: 340px;
+  max-height: 460px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: #1a9e7a;
+  color: white;
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 200px;
+}
+
+.chat-empty {
+  color: #888;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.chat-bubble {
+  padding: 9px 13px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 85%;
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  &.user {
+    align-self: flex-end;
+    background: #1a9e7a;
+    color: white;
+    border-bottom-right-radius: 2px;
+  }
+
+  &.model {
+    align-self: flex-start;
+    background: #f0f0f0;
+    color: #222;
+    border-bottom-left-radius: 2px;
+  }
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #eee;
+
+  input {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1px solid #ddd;
+    border-radius: 9px;
+    font-size: 14px;
+    outline: none;
+
+    &:focus { border-color: #1a9e7a; }
+  }
+
+  button {
+    background: #1a9e7a;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    padding: 9px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover:not(:disabled) { background: #168a6a; }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+}

@@ -1,0 +1,71 @@
+<div class="dashboard">
+
+  <header class="dash-header">
+    <div>
+      <a class="dash-home" routerLink="/client/dashboard">← {{ 'DASHBOARD.TITLE' | translate }}</a>
+      <h1>{{ 'USERS.TITLE' | translate }}</h1>
+      <p class="dash-sub">{{ 'USERS.SUBTITLE' | translate: { count: totalItems } }}</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <form class="filters" [formGroup]="filters" (ngSubmit)="applyFilters()">
+      <input type="search" formControlName="search" [placeholder]="'USERS.SEARCH' | translate"
+             [attr.aria-label]="'USERS.SEARCH' | translate" />
+      <select formControlName="role" [attr.aria-label]="'USERS.ROLE' | translate">
+        <option value="">{{ 'USERS.ALL_ROLES' | translate }}</option>
+        <option value="admin">{{ 'USERS.ROLE_ADMIN' | translate }}</option>
+        <option value="user">{{ 'USERS.ROLE_USER' | translate }}</option>
+      </select>
+      <select formControlName="sortBy" [attr.aria-label]="'FILTERS.SORT' | translate">
+        <option value="name">{{ 'USERS.SORT_NAME' | translate }}</option>
+        <option value="email">{{ 'USERS.SORT_EMAIL' | translate }}</option>
+        <option value="newest">{{ 'FILTERS.NEWEST' | translate }}</option>
+      </select>
+      <button type="button" class="btn" (click)="resetFilters()">{{ 'FILTERS.RESET' | translate }}</button>
+    </form>
+
+    <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="empty" *ngIf="!isLoading && !errorMessage && items.length === 0">{{ 'USERS.EMPTY' | translate }}</div>
+
+    <div class="table-wrap" *ngIf="items.length > 0">
+      <table class="ads-table" [class.loading]="isLoading">
+        <thead>
+          <tr>
+            <th>{{ 'USERS.NAME' | translate }}</th>
+            <th>{{ 'AUTH.EMAIL' | translate }}</th>
+            <th>{{ 'USERS.ROLE' | translate }}</th>
+            <th>{{ 'USERS.REGISTERED' | translate }}</th>
+            <th class="actions-col">{{ 'DASHBOARD.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of items">
+            <td>{{ u.name }} {{ u.surname }}</td>
+            <td>{{ u.email }}</td>
+            <td>
+              <span class="badge" [class.st-Live]="u.isAdmin">
+                {{ (u.isAdmin ? 'USERS.ROLE_ADMIN' : 'USERS.ROLE_USER') | translate }}
+              </span>
+            </td>
+            <td>{{ u.createdAtUtc | localDate:'shortDate' }}</td>
+            <td class="actions-col">
+              <button type="button" class="link danger"
+                      [disabled]="busyUserId === u.id || u.id === auth.currentUser()?.userId"
+                      (click)="deleteUser(u)">{{ 'COMMON.DELETE' | translate }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <app-paginator
+      [page]="paging.page"
+      [pageSize]="paging.pageSize"
+      [total]="totalItems"
+      (pageChange)="goToPage($event)"
+      (pageSizeChange)="changePageSize($event)">
+    </app-paginator>
+  </section>
+</div>

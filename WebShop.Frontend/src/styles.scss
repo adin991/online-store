@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+}
+/* Cart drawer: "save for later" list (kept global to stay inside the component style budget) */
+.cart-drawer .cart-item-later {
+  align-self: flex-start; margin-top: 4px; padding: 0; border: none; background: none;
+  color: #1a9e7a; font-size: 12.5px; cursor: pointer;
+}
+.cart-drawer .cart-saved { padding: 12px 20px 20px; border-top: 1px solid #eee; }
+.cart-drawer .cart-saved-title { margin: 0 0 8px; font-size: 14px; color: #555; }
+
+/* Ad details: product options (color / size) + availability */
+.detail-page .options { display: flex; flex-direction: column; gap: 12px; margin: 4px 0 18px; }
+.detail-page .option-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #555; }
+.detail-page .option-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.detail-page .chip {
+  padding: 6px 14px; border: 1px solid #ddd; border-radius: 999px; background: #fff; font-size: 13px; cursor: pointer;
+  &.selected { border-color: #1a9e7a; background: #e3f6ef; color: #1a7d61; font-weight: 600; }
+}
+.detail-page .option-error { font-size: 12.5px; color: #e53935; }
+.detail-page .unavailable-note { margin: 8px 0 16px; padding: 10px 14px; border-radius: 8px; background: #fff4d6; color: #8a5a00; font-size: 14px; }

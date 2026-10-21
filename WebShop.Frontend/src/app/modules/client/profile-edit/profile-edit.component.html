@@ -1,0 +1,94 @@
+<div class="profile-page">
+
+  <button class="btn-back" type="button" (click)="router.navigate(['/client/dashboard'])">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    {{ 'DASHBOARD.TITLE' | translate }}
+  </button>
+
+  <div class="profile-card">
+    <div class="card-header">
+      <div class="avatar">{{ initials }}</div>
+      <div>
+        <h1 class="card-title">{{ 'SETTINGS.TITLE' | translate }}</h1>
+        <p class="card-subtitle">{{ model?.email }}</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <form class="profile-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="profile-name">{{ 'AUTH.FIRST_NAME' | translate }}</label>
+          <input id="profile-name" type="text" formControlName="name" autocomplete="given-name" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+        <div class="form-group">
+          <label for="profile-surname">{{ 'AUTH.LAST_NAME' | translate }}</label>
+          <input id="profile-surname" type="text" formControlName="surname" autocomplete="family-name" />
+          <app-field-error [control]="form.controls.surname"></app-field-error>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="profile-email">{{ 'AUTH.EMAIL' | translate }}</label>
+        <input id="profile-email" type="email" formControlName="email" autocomplete="email" />
+        <app-field-error [control]="form.controls.email"></app-field-error>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'AUTH.GENDER' | translate }}</label>
+        <div class="gender-toggle">
+          <button type="button" [class.active]="form.controls.gender.value === 0" (click)="setGender(0)">{{ 'AUTH.MALE' | translate }}</button>
+          <button type="button" [class.active]="form.controls.gender.value === 1" (click)="setGender(1)">{{ 'AUTH.FEMALE' | translate }}</button>
+        </div>
+      </div>
+
+      <div class="success-msg" *ngIf="saveSuccess">{{ 'SETTINGS.SAVED' | translate }}</div>
+      <div class="error-msg" *ngIf="saveError">{{ saveError }}</div>
+
+      <button type="submit" class="btn-save" [disabled]="isSaving || isLoading">
+        {{ isSaving ? ('COMMON.SAVING' | translate) : ('COMMON.SAVE_CHANGES' | translate) }}
+      </button>
+    </form>
+
+    <div class="divider"></div>
+
+    <!-- Regional settings: language + formatting of dates, numbers and currency -->
+    <div class="form-group">
+      <label>{{ 'SETTINGS.REGION' | translate }}</label>
+      <div class="gender-toggle">
+        <button type="button" *ngFor="let l of languages"
+                [class.active]="locale.lang() === l.code" (click)="setLanguage(l.code)">
+          {{ l.labelKey | translate }}
+        </button>
+      </div>
+      <p class="danger-desc">{{ 'SETTINGS.REGION_HINT' | translate }} {{ 1234.5 | money }} · {{ sampleDate | localDate:'medium' }}</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="danger-zone">
+      <h3 class="danger-title">{{ 'SETTINGS.DANGER_ZONE' | translate }}</h3>
+      <p class="danger-desc">{{ 'SETTINGS.DELETE_WARNING' | translate }}</p>
+      <button class="btn-delete-account" type="button" (click)="confirmDelete()">{{ 'SETTINGS.DELETE_ACCOUNT' | translate }}</button>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="modal-overlay" *ngIf="showDeleteConfirm">
+    <div class="modal">
+      <h2>{{ 'SETTINGS.DELETE_CONFIRM_TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.DELETE_CONFIRM_TEXT' | translate }}</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" type="button" (click)="cancelDelete()">{{ 'COMMON.CANCEL' | translate }}</button>
+        <button class="btn-confirm-delete" type="button" (click)="deleteAccount()" [disabled]="isDeleting">
+          {{ isDeleting ? ('COMMON.DELETING' | translate) : ('SETTINGS.DELETE_CONFIRM_BTN' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
